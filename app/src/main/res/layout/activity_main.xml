@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/Water"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:rotation="180"
+        android:scaleType="centerCrop"
+        android:src="@drawable/water" />
+
+    <ImageView
+        android:id="@+id/boat"
+        android:layout_width="155dp"
+        android:layout_height="344dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="189dp"
+        android:layout_marginEnd="188dp"
+        android:layout_marginBottom="198dp"
+        android:foregroundGravity="center"
+        android:src="@drawable/boatforapp" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="17dp"
+        android:backgroundTint="@color/black"
+        android:text="Arrow Controls" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="16dp"
+        android:background=""
+        app:tint="@color/purple_700"
+        app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
+
+    <TextView
+        android:id="@+id/angelShower"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="81dp"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="80dp"
+        android:text="Angle" />
+
+</RelativeLayout>
