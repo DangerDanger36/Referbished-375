@@ -17,6 +17,8 @@ class MainActivity: AppCompatActivity(), SensorEventListener {
     private lateinit var boat: ImageView
     private lateinit var angleShower: TextView
 
+    select.device.refresh
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
