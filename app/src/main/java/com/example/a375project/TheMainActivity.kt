@@ -1,29 +1,25 @@
 package com.example.a375project
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import io.github.controlwear.virtual.joystick.android.JoystickView
 
-class MainActivity: AppCompatActivity(), SensorEventListener {
+class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var boat: ImageView
@@ -36,7 +32,6 @@ class MainActivity: AppCompatActivity(), SensorEventListener {
     private var sidesSending: Int = 0
     private var sideToSend: Int = 0
     private var sidesSendingString: String = ""
-    private var theBoatObject: String = ""
 
     private val REQUEST_CODE_ENABLE_BT: Int = 1;
 
@@ -84,22 +79,21 @@ class MainActivity: AppCompatActivity(), SensorEventListener {
 
             angleShower.text = "Left/Right ${sides.toInt()}"
 
-            if(theBoatObject == "98:DA:60:05:77:69") {
-                sidesSending = (sides.toInt() * 10) + 90
-                sidesSendingString = "<" + (sidesSending).toString() + ">"
-                sideToSend = 90
+            sidesSending = (sides.toInt()*10) + 90
+            sidesSendingString = "<" + (sidesSending).toString() + ">"
+            sideToSend = 90
 
-                if (sideToSend != sidesSending) {
-                    sideToSend = (sides.toInt() * 10) + 90
-                    bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
-                }
-
-                joyStick.setOnMoveListener { angle, strength ->
-                    var throttleToSend = "<" + (throttle).toString() + ">"
-                    bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
-                    throttle = strength * 2
-                }
+            if(sideToSend != sidesSending){
+                sideToSend = (sides.toInt() *10) + 90
+                bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
             }
+
+            joyStick.setOnMoveListener { angle, strength ->
+                var throttleToSend = "<" + (throttle).toString() + ">"
+                bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+                throttle = strength*2
+            }
+
         }
     }
 
@@ -117,33 +111,28 @@ class MainActivity: AppCompatActivity(), SensorEventListener {
                 val deviceAddress = device
                 if (device.address.equals("98:DA:60:05:77:69")) {
                     deviceToConnectTo = device
-                    theBoatObject = device.address
                     Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(this,"Please connect to the boat in the phone's setting before clicking.", Toast.LENGTH_LONG).show()
                 }
 
                 Toast.makeText(this, "Already On and Connected", Toast.LENGTH_LONG).show()
             }
         }else{
-                val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(intent, REQUEST_CODE_ENABLE_BT);
+            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(intent, REQUEST_CODE_ENABLE_BT);
 
-                if (bAdapter.isEnabled) {
-                    val devices = bAdapter.bondedDevices
-                    for (device in devices) {
-                        val deviceName = device.name
-                        val deviceAddress = device
-                        if (device.address.equals("98:DA:60:05:77:69")) {
-                            deviceToConnectTo = device
-                            Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
-                        }else{
-                            Toast.makeText(this,"Please connect to the boat in the phone's setting before clicking.", Toast.LENGTH_LONG).show()
-                        }
-
-                        Toast.makeText(this, "On and Connected", Toast.LENGTH_LONG).show()
+            if (bAdapter.isEnabled) {
+                val devices = bAdapter.bondedDevices
+                for (device in devices) {
+                    val deviceName = device.name
+                    val deviceAddress = device
+                    if (device.address.equals("98:DA:60:05:77:69")) {
+                        deviceToConnectTo = device
+                        Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
                     }
+
+                    Toast.makeText(this, "On and Connected", Toast.LENGTH_LONG).show()
                 }
+            }
         }
     }
 

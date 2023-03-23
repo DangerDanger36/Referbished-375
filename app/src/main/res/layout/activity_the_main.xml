@@ -22,12 +22,27 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="195dp"
-        android:layout_marginEnd="146dp"
-        android:layout_marginBottom="192dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="157dp"
+        android:layout_marginEnd="202dp"
+        android:layout_marginBottom="230dp"
         android:foregroundGravity="center"
         android:src="@drawable/boatforapp" />
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        android:id="@+id/joystick"
+        android:layout_width="163dp"
+        android:layout_height="211dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="360dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="57dp"
+        app:JV_borderColor="#01CFD4"
+        app:JV_borderWidth="4dp"
+        app:JV_buttonColor="#2196F3"
+        app:JV_buttonSizeRatio="25%"
+        app:JV_fixedCenter="false" />
 
     <Switch
         android:id="@+id/switch1"
@@ -42,14 +57,15 @@
         android:text="Differnt Controls" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/blueToothConnect"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="11dp"
         android:layout_marginEnd="16dp"
-        android:background=""
+        android:onClick="onClick"
+        android:background="@drawable/water"
         app:tint="@color/purple_700"
         app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
         android:contentDescription="BlueTooth"/>
@@ -61,8 +77,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="81dp"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="77dp"
         android:layout_marginEnd="80dp"
         android:text="Angle" />
 
