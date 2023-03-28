@@ -17,30 +17,40 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.a375project.databinding.ActivityTheMainBinding
 import io.github.controlwear.virtual.joystick.android.JoystickView
+import kotlin.math.log
 
 class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var boat: ImageView
     private lateinit var angleShower: TextView
+    private lateinit var throttleShower: TextView
     private lateinit var blueToothConnect: ImageButton
     private lateinit var bAdapter: BluetoothAdapter
     private lateinit var bSocket: BluetoothSocket
     private lateinit var joyStick: JoystickView
+    private lateinit var binding: ActivityTheMainBinding
     private var throttle: Int = 0
     private var sidesSending: Int = 0
     private var sideToSend: Int = 0
     private var sidesSendingString: String = ""
+    private var isConnected: Boolean = false
 
     private val REQUEST_CODE_ENABLE_BT: Int = 1;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        boat = findViewById(R.id.boat)
+        binding = ActivityTheMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         angleShower = findViewById(R.id.angelShower)
+        boat = findViewById(R.id.boat)
         blueToothConnect = findViewById(R.id.blueToothConnect)
+        joyStick = findViewById(R.id.joystick)
+        throttleShower = findViewById(R.id.throttleNum)
 
         blueToothConnect.setOnClickListener(View.OnClickListener() {
             fun onClick(){
@@ -63,18 +73,10 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if(event?.sensor?.type == Sensor.TYPE_ACCELEROMETER){
             val sides = event.values[0]
-            val upDown = event.values[1]
 
             boat.apply {
-                val matrix = Matrix()
-                //HI
-                val pivotX = upDown * 3f
-                val pivotY = sides * 3f
-
-                boat.setScaleType(ImageView.ScaleType.MATRIX)
-
-                matrix.postRotate(android.R.attr.angle.toFloat(), pivotX, pivotY)
-                boat.setImageMatrix(matrix)
+                rotationY = sides * 3f  //The rotaion of the image
+                rotation = sides
             }
 
             angleShower.text = "Left/Right ${sides.toInt()}"
@@ -83,15 +85,23 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             sidesSendingString = "<" + (sidesSending).toString() + ">"
             sideToSend = 90
 
-            if(sideToSend != sidesSending){
+            if(sideToSend != sidesSending && isConnected){
                 sideToSend = (sides.toInt() *10) + 90
                 bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
             }
 
-            joyStick.setOnMoveListener { angle, strength ->
-                var throttleToSend = "<" + (throttle).toString() + ">"
-                bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
-                throttle = strength*2
+
+
+            if(isConnected) {
+                joyStick.setOnMoveListener { angle, strength ->
+                    var throttleToSend = "<" + (throttle).toString() + ">"
+                    bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+                    throttle = strength * 2
+                }
+            }else{
+                joyStick.setOnMoveListener {angle, strength ->
+                    throttleShower.text = "Throttle Percent ${strength.toString()}"
+                }
             }
 
         }
@@ -100,33 +110,43 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         return
     }
+
+    //This function is what is called when the switch to change to joystick controls is on
+    fun changedControls(){
+
+    }
+
+    //This is the function that is called when the bluetooth button is clicked
     @SuppressLint("MissingPermission")
     fun connectBlutoth() {
-        bAdapter = BluetoothAdapter.getDefaultAdapter()
+        bAdapter = BluetoothAdapter.getDefaultAdapter() //Gets Adapter
         var deviceToConnectTo: BluetoothDevice
+        //The if/else statement detects if Bluetooth is already enabled
         if (bAdapter.isEnabled) {
             val devices = bAdapter.bondedDevices
-            for (device in devices) {
+            for (device in devices) {       //Gets a list bonded devices
                 val deviceName = device.name
                 val deviceAddress = device
-                if (device.address.equals("98:DA:60:05:77:69")) {
+                if (device.address.equals("98:DA:60:05:77:69")) {       //Checking for the Boat's Mac addres
                     deviceToConnectTo = device
+                    isConnected = true;
                     Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
                 }
-
+                //If everything is setup before starting
                 Toast.makeText(this, "Already On and Connected", Toast.LENGTH_LONG).show()
             }
         }else{
-            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)     //Ask the user on a pop-up window to enable Bluetooth
             startActivityForResult(intent, REQUEST_CODE_ENABLE_BT);
 
-            if (bAdapter.isEnabled) {
+            if (bAdapter.isEnabled) {              //Same as if Bluetooth was on to begin on so the user doesn't have to click the button twice
                 val devices = bAdapter.bondedDevices
                 for (device in devices) {
                     val deviceName = device.name
                     val deviceAddress = device
                     if (device.address.equals("98:DA:60:05:77:69")) {
                         deviceToConnectTo = device
+                        isConnected = true;
                         Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
                     }
 
