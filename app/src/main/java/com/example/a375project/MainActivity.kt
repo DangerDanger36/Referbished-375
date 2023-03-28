@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import io.github.controlwear.virtual.joystick.android.JoystickView
 
-class MainActivity: AppCompatActivity(), SensorEventListener {
+class TMainActivity: AppCompatActivity(), SensorEventListener {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var boat: ImageView
