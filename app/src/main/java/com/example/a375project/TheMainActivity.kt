@@ -23,6 +23,7 @@ import kotlin.math.log
 
 class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
+    //Global Vars
     private lateinit var sensorManager: SensorManager
     private lateinit var boat: ImageView
     private lateinit var angleShower: TextView
@@ -38,6 +39,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private var sidesSendingString: String = ""
     private var isConnected: Boolean = false
 
+    //Do not change code used in Bluetooth to send a code to the phone
     private val REQUEST_CODE_ENABLE_BT: Int = 1;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +48,14 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         binding = ActivityTheMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //intalizing the front-end aspects that this back-end changes or uses to present data to the user
         angleShower = findViewById(R.id.angelShower)
         boat = findViewById(R.id.boat)
         blueToothConnect = findViewById(R.id.blueToothConnect)
         joyStick = findViewById(R.id.joystick)
         throttleShower = findViewById(R.id.throttleNum)
 
+        //if button is clicked then connect to the boat
         blueToothConnect.setOnClickListener(View.OnClickListener() {
             fun onClick(){
                 connectBlutoth()
@@ -62,6 +66,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
     }
 
+    //Sets up the Accelerometer for sending the direction to the boat and to manipulate the boat image
     private fun setUpSensor(){
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
@@ -75,30 +80,31 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             val sides = event.values[0]
 
             boat.apply {
-                rotationY = sides * 3f  //The rotaion of the image
-                rotation = sides
+                rotationY = sides * 3f  //The rotaion of the image on the Y axis (Left and Right)
+                //rotation = sides      //Commented out to lock the rotaion of the Boat, so the image does not contort
             }
 
             angleShower.text = "Left/Right ${sides.toInt()}"
 
-            sidesSending = (sides.toInt()*10) + 90
-            sidesSendingString = "<" + (sidesSending).toString() + ">"
-            sideToSend = 90
+            if(sideToSend != sidesSending && isConnected){      //only when the boat is connected will it try to write to the boat to turn
+                sidesSending = (sides.toInt()*10) + 90
+                sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarray
+                sideToSend = 90
 
-            if(sideToSend != sidesSending && isConnected){
                 sideToSend = (sides.toInt() *10) + 90
                 bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
             }
 
 
 
-            if(isConnected) {
+            if(isConnected) {       //if the Boat is connected to the phone to actully control the throttle
                 joyStick.setOnMoveListener { angle, strength ->
                     var throttleToSend = "<" + (throttle).toString() + ">"
+                    throttleShower.text = "Throttle Percent ${strength.toString()}"
                     bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
                     throttle = strength * 2
                 }
-            }else{
+            }else{                  //Otherwise it shows only shows how much throttle you are giving it, helps when testing
                 joyStick.setOnMoveListener {angle, strength ->
                     throttleShower.text = "Throttle Percent ${strength.toString()}"
                 }
