@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,11 +33,17 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private lateinit var bAdapter: BluetoothAdapter
     private lateinit var bSocket: BluetoothSocket
     private lateinit var joyStick: JoystickView
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private lateinit var switchControls: Switch
     private lateinit var binding: ActivityTheMainBinding
     private var throttle: Int = 0
     private var sidesSending: Int = 0
     private var sideToSend: Int = 0
     private var sidesSendingString: String = ""
+    private var angleSending: Int = 0
+    private var angleSendingString: String = ""
+    private var angleToSend: Int = 0
+    private  var throttleToSend: String = ""
     private var isConnected: Boolean = false
 
     //Do not change code used in Bluetooth to send a code to the phone
@@ -54,6 +61,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         blueToothConnect = findViewById(R.id.blueToothConnect)
         joyStick = findViewById(R.id.joystick)
         throttleShower = findViewById(R.id.throttleNum)
+        switchControls = findViewById(R.id.switchControls)
 
         //if button is clicked then connect to the boat
         blueToothConnect.setOnClickListener(View.OnClickListener() {
@@ -63,7 +71,8 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         })
 
         setUpSensor()
-
+        //if the differnt controls switch is active, then switches to joystick controls
+        setUpSensor()
     }
 
     //Sets up the Accelerometer for sending the direction to the boat and to manipulate the boat image
@@ -119,8 +128,32 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
     //This function is what is called when the switch to change to joystick controls is on
     fun changedControls(){
+        sensorManager.unregisterListener(this)
+        if(angleToSend != angleSending && isConnected){
+            joyStick.setOnMoveListener { angle, strength ->
+                angleShower.text = "Left/Right ${angle}"
+                throttleShower.text = "Throttle Percent ${strength.toString()}"
 
-    }
+                angleSending = (angle.toInt() * 10) + 90
+                angleSendingString = "<" + (angleSending).toString() + ">"      //Lines 131-133 are the converstions to send to the Aurdino by converting the data into an bitarray
+                angleToSend = 90
+
+                angleToSend = (angle.toInt() *10) + 90
+
+                throttleToSend = "<" + (throttle).toString() + ">"
+                throttle = strength * 2
+
+                bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+                bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
+            }
+        }else{
+                joyStick.setOnMoveListener { angle, strength ->
+                    throttleShower.text = "Throttle Percent ${strength.toString()}"
+                    angleShower.text = "Left/Right ${angle}"
+
+                }
+            }
+        }
 
     //This is the function that is called when the bluetooth button is clicked
     @SuppressLint("MissingPermission")
