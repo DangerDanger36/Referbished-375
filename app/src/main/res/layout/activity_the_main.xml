@@ -61,7 +61,7 @@
         android:switchMinWidth="@dimen/cardview_default_radius"
         android:text="Controls"
         android:textOn="Tilt Controls"
-        android:textOff="Differnt Controls"
+        android:textOff="Joystick Controls"
         android:textStyle="bold"
         android:textColor="@color/black" />
 
