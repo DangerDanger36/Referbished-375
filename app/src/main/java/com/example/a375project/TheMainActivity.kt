@@ -71,8 +71,19 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         })
 
         setUpSensor()
+
         //if the differnt controls switch is active, then switches to joystick controls
-        setUpSensor()
+        switchControls.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked) {
+                switchControls.setText(switchControls.textOff)
+                sensorManager.unregisterListener(this)
+                changedControls()
+            }else {
+                switchControls.setText(switchControls.textOn)
+                setUpSensor()
+            }
+        }
+
     }
 
     //Sets up the Accelerometer for sending the direction to the boat and to manipulate the boat image

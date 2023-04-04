@@ -62,6 +62,7 @@
         android:text="Controls"
         android:textOn="Tilt Controls"
         android:textOff="Differnt Controls"
+        android:textStyle="bold"
         android:textColor="@color/black" />
 
     <ImageButton
