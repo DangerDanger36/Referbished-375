@@ -166,6 +166,12 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 throttleToSend = "<" + (throttle).toString() + ">"
 
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+                throttleToSend = "<" + (0).toString() + ">" //Called again to reset the throttle of the servo since we would overexert the servo if not
+                bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+
+
+                bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
+                angleSendingString = "<" + (0).toString() + ">" //Called again to reset the postion of the servo since we would overexert the servo if not
                 bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
             }
         }else{
