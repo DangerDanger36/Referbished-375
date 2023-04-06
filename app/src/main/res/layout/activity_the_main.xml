@@ -107,4 +107,18 @@
         android:textColor="@color/black"
         android:textSize="23dp" />
 
+    <ProgressBar
+        android:id="@+id/blueToothLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:minWidth="100dp"
+        android:minHeight="100dp"
+        android:max="100"
+        android:foregroundTint="@color/purple_200"/>
+
 </RelativeLayout>
