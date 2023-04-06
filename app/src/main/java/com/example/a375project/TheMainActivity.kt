@@ -203,7 +203,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 this,
                 android.Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        ) {                                     //Grants permissions to the app for bluethooth connections
             val permissions = arrayOf(
                 android.Manifest.permission.BLUETOOTH_CONNECT,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -222,11 +222,8 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 if (device.address.equals("98:DA:60:05:77:69")) {       //Checking for the Boat's Mac address
                     deviceToConnectTo = device
                     isConnected = true;
-                    Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
                 }
 
-                //If everything is setup before starting
-                Toast.makeText(this, "Already On and Connected", Toast.LENGTH_LONG).show()
             }
         }else{
             val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE) //Ask the user on a pop-up window to enable Bluetooth
@@ -240,17 +237,19 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                     if (device.address.equals("98:DA:60:05:77:69")) {
                         deviceToConnectTo = device
                         isConnected = true;
-                        Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show()
                     }
-
-                    Toast.makeText(this, "On and Connected", Toast.LENGTH_LONG).show()
                 }
             }
         }
 
         if (deviceToConnectTo != null && deviceToConnectTo.bondState == BluetoothDevice.BOND_BONDED) {
             bSocket = deviceToConnectTo.createRfcommSocketToServiceRecord(uuid)
-            bSocket!!.connect()
+            try {
+                bSocket!!.connect()
+                Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+            }catch (e :Exception){
+                Toast.makeText(this, "Can Not Connect", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
