@@ -6,18 +6,19 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Matrix
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.a375project.databinding.ActivityTheMainBinding
@@ -38,6 +39,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private lateinit var bSocket: BluetoothSocket
     private lateinit var joyStick: JoystickView
     private lateinit var deviceToConnectTo: BluetoothDevice
+    private lateinit var loadingBluetooth: ProgressBar
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var switchControls: Switch
     private lateinit var binding: ActivityTheMainBinding
@@ -48,7 +50,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private var angleSending: Int = 0
     private var angleSendingString: String = ""
     private var angleToSent: Int = 0
-    private  var throttleToSend: String = ""
+    private var throttleToSend: String = ""
     private var isConnected: Boolean = false
 
     //Do not change code used in Bluetooth to send a code to the phone
@@ -67,9 +69,11 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         joyStick = findViewById(R.id.joystick)
         throttleShower = findViewById(R.id.throttleNum)
         switchControls = findViewById(R.id.switchControls)
+        loadingBluetooth = findViewById(R.id.blueToothLoading)
 
         //if button is clicked then connect to the boat
         blueToothConnect.setOnClickListener {
+            loadingBluetooth.visibility = View.VISIBLE
             connectBlutoth()
         }
 
@@ -197,8 +201,8 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     fun connectBlutoth() {
         bAdapter = BluetoothAdapter.getDefaultAdapter() //Gets Adapter
         val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB") // standard UUID for SPP (Serial Port Profile)
-        //The if/else statement detects if Bluetooth is already enabled
 
+        //The if/else statement detects if Bluetooth is already enabled
         if (ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.BLUETOOTH_CONNECT
@@ -221,7 +225,6 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 val deviceAddress = device
                 if (device.address.equals("98:DA:60:05:77:69")) {       //Checking for the Boat's Mac address
                     deviceToConnectTo = device
-                    isConnected = true;
                 }
 
             }
@@ -236,23 +239,41 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                     val deviceAddress = device
                     if (device.address.equals("98:DA:60:05:77:69")) {
                         deviceToConnectTo = device
-                        isConnected = true;
                     }
                 }
             }
         }
 
-        if (deviceToConnectTo != null && deviceToConnectTo.bondState == BluetoothDevice.BOND_BONDED) {
-            bSocket = deviceToConnectTo.createRfcommSocketToServiceRecord(uuid)
-            try {
-                bSocket!!.connect()
-                Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
-            }catch (e :Exception){
-                Toast.makeText(this, "Can Not Connect", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
+        var i = 0
+        i = loadingBluetooth.progress
+        isConnected = false
+        Thread(Runnable {
+            while(!isConnected){
+                i += 1
 
+                try {
+                    if (deviceToConnectTo != null && deviceToConnectTo.bondState == BluetoothDevice.BOND_BONDED) {
+                        bSocket = deviceToConnectTo.createRfcommSocketToServiceRecord(uuid)
+                        try {
+                            bSocket!!.connect()
+                            isConnected = true;
+                            Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+                        }catch (e :Exception){
+                            Looper.prepare()
+                            Toast.makeText(this, "Can Not Connect", Toast.LENGTH_LONG).show()
+                            break;
+                        }
+                    }
+
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+
+            }
+
+            loadingBluetooth.visibility = View.INVISIBLE
+        }).start()
+    }
     override fun onDestroy() {
         sensorManager.unregisterListener(this)
         super.onDestroy()
