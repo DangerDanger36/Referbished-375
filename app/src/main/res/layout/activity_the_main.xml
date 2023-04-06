@@ -119,6 +119,6 @@
         android:minWidth="100dp"
         android:minHeight="100dp"
         android:max="100"
-        android:foregroundTint="@color/purple_200"/>
+        android:indeterminateTint="#065788"/>
 
 </RelativeLayout>
