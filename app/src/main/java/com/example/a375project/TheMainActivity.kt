@@ -105,7 +105,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if(event?.sensor?.type == Sensor.TYPE_ACCELEROMETER){
             val sides = event.values[0]
-            
+
 
             boat.apply {
                 rotationY = sides * 3f  //The rotaion of the image on the Y axis (Left and Right)
@@ -116,12 +116,12 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             sidesSending = (sides.toInt()*10) + 90
 
             if((sideSent != sidesSending) && isConnected){      //only when the boat is connected will it try to write to the boat to turn
-                Toast.makeText(this, "If Statement works", Toast.LENGTH_LONG).show()
                 sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarra
 
                 sideSent = sidesSending
 
                 bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
+
             }
 
             if(isConnected) {       //if the Boat is connected to the phone to actully control the throttle
@@ -253,6 +253,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                         try {
                             bSocket!!.connect()
                             isConnected = true;
+                            Looper.prepare()
                             Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
                         }catch (e :Exception){
                             Looper.prepare()
