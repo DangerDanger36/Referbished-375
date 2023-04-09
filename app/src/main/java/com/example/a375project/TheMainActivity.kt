@@ -45,7 +45,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private lateinit var binding: ActivityTheMainBinding
     private var throttle: Int = 0
     private var sidesSending: Int = 90
-    private var sideToSend: Int = 0
+    private var sideSent: Int = 0
     private var sidesSendingString: String = ""
     private var angleSending: Int = 0
     private var angleSendingString: String = ""
@@ -113,13 +113,13 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
             angleShower.text = "Left/Right ${sides.toInt()}"
 
-            if(sideToSend != sidesSending && isConnected){      //only when the boat is connected will it try to write to the boat to turn
+            if((sideSent != sidesSending) && isConnected){      //only when the boat is connected will it try to write to the boat to turn
                 Toast.makeText(this, "If Statement works", Toast.LENGTH_LONG).show()
                 sidesSending = (sides.toInt()*10) + 90
-                sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarray
-                sideToSend = 90
+                sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarra
 
-                sideToSend = (sides.toInt() *10) + 90
+                sideSent = sidesSending
+
                 bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
             }
 
