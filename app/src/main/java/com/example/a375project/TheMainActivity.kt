@@ -105,6 +105,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if(event?.sensor?.type == Sensor.TYPE_ACCELEROMETER){
             val sides = event.values[0]
+            
 
             boat.apply {
                 rotationY = sides * 3f  //The rotaion of the image on the Y axis (Left and Right)
