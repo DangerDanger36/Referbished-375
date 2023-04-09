@@ -23,6 +23,7 @@
             android:text="Paired BlueTooth Device List"
             android:textColor="@color/black"
             android:textSize="30dp"
+            android:paddingBottom="10dp"
             />
 
 
