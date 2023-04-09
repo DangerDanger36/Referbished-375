@@ -13,19 +13,14 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.Switch
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.a375project.databinding.ActivityTheMainBinding
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import java.util.*
-import kotlin.math.cos
 import kotlin.math.PI
+import kotlin.math.cos
 
 class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
@@ -244,6 +239,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
         i = loadingBluetooth.progress
         isConnected = false
         Thread(Runnable {
+
             while(!isConnected){
                 i += 1
 
@@ -253,15 +249,25 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                         try {
                             bSocket!!.connect()
                             isConnected = true;
-
-                            if( isConnected) {
-                                Looper.prepare()
-                                Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
-                            }
+                            //Send toast to run on UI thread.
+                            this.runOnUiThread(Runnable {
+                                Toast.makeText(
+                                    this,
+                                    "Connected",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            })
 
                         }catch (e :Exception){
                             Looper.prepare()
-                            Toast.makeText(this, "Can Not Connect", Toast.LENGTH_LONG).show()
+                            //Send toast to run on UI thread.
+                            this.runOnUiThread(Runnable {
+                                Toast.makeText(
+                                    this,
+                                    "Can Not Connect",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            })
                             break;
                         }
                     }
