@@ -126,7 +126,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
             if(isConnected) {       //if the Boat is connected to the phone to actully control the throttle
                 joyStick.setOnMoveListener { angle, strength ->
-                    var throttleToSend = "<" + (throttle).toString() + ">"
+                    var throttleToSend = "<$" + (throttle).toString() + ">"
                     throttleShower.text = "Throttle Percent ${strength.toString()}"
                     bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
                     throttle = strength * 2
@@ -151,10 +151,9 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             joyStick.setOnMoveListener { angle, strength ->
 
                 angleSending = 90 + (cos(angle.toDouble() * (PI/180) ) * 20).toInt()
-
                 angleSendingString = "<" + (angleSending).toString() + ">"      //Lines 131-133 are the converstions to send to the Aurdino by converting the data into an bitarray
 
-                angleToSent = 90 + (cos(angle.toDouble() * (PI/180) ) * 20).toInt()
+                angleToSent = angleSending
 
                 if(angle == 0){
                     angleSending = 90
@@ -168,14 +167,11 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 }
 
                 throttleToSend = "<$" + (throttle).toString() + ">"
-
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+
                 throttleToSend = "<$" + (0).toString() + ">" //Called again to reset the throttle of the servo since we would overexert the servo if not
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
 
-
-                bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
-                angleSendingString = "<" + (0).toString() + ">" //Called again to reset the postion of the servo since we would overexert the servo if not
                 bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
             }
         }else{
