@@ -85,7 +85,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 switchControls.setText(switchControls.textOff)
                 sensorManager.unregisterListener(this)
                 changedControls()
-            }else {
+            }else if(!isChecked){
                 switchControls.setText(switchControls.textOn)
                 setUpSensor()
             }
@@ -167,10 +167,10 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                     throttleShower.text = "Throttle Percent ${strength.toString()}"
                 }
 
-                throttleToSend = "<" + (throttle).toString() + ">"
+                throttleToSend = "<$" + (throttle).toString() + ">"
 
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
-                throttleToSend = "<" + (0).toString() + ">" //Called again to reset the throttle of the servo since we would overexert the servo if not
+                throttleToSend = "<$" + (0).toString() + ">" //Called again to reset the throttle of the servo since we would overexert the servo if not
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
 
 
