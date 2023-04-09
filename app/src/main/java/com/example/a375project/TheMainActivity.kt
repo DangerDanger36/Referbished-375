@@ -251,22 +251,13 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                             isConnected = true;
                             //Send toast to run on UI thread.
                             this.runOnUiThread(Runnable {
-                                Toast.makeText(
-                                    this,
-                                    "Connected",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
                             })
 
                         }catch (e :Exception){
-                            Looper.prepare()
                             //Send toast to run on UI thread.
                             this.runOnUiThread(Runnable {
-                                Toast.makeText(
-                                    this,
-                                    "Can Not Connect",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(this, "Can Not Connect", Toast.LENGTH_SHORT).show()
                             })
                             break;
                         }
