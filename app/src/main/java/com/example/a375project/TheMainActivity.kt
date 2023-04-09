@@ -112,10 +112,10 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             }
 
             angleShower.text = "Left/Right ${sides.toInt()}"
+            sidesSending = (sides.toInt()*10) + 90
 
             if((sideSent != sidesSending) && isConnected){      //only when the boat is connected will it try to write to the boat to turn
                 Toast.makeText(this, "If Statement works", Toast.LENGTH_LONG).show()
-                sidesSending = (sides.toInt()*10) + 90
                 sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarra
 
                 sideSent = sidesSending
