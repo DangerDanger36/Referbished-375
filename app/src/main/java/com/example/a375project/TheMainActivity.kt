@@ -44,7 +44,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private lateinit var switchControls: Switch
     private lateinit var binding: ActivityTheMainBinding
     private var throttle: Int = 0
-    private var sidesSending: Int = 0
+    private var sidesSending: Int = 90
     private var sideToSend: Int = 0
     private var sidesSendingString: String = ""
     private var angleSending: Int = 0
@@ -121,8 +121,6 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 sideToSend = (sides.toInt() *10) + 90
                 bSocket.outputStream.write(sidesSendingString.toByteArray(Charsets.UTF_8))
             }
-
-
 
             if(isConnected) {       //if the Boat is connected to the phone to actully control the throttle
                 joyStick.setOnMoveListener { angle, strength ->
