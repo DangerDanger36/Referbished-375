@@ -253,8 +253,12 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                         try {
                             bSocket!!.connect()
                             isConnected = true;
-                            Looper.prepare()
-                            Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+
+                            if( isConnected) {
+                                Looper.prepare()
+                                Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+                            }
+
                         }catch (e :Exception){
                             Looper.prepare()
                             Toast.makeText(this, "Can Not Connect", Toast.LENGTH_LONG).show()
