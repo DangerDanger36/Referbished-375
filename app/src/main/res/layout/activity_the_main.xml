@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="-20dp"
+        android:layout_marginTop="0dp"
         android:rotation="180"
         android:scaleType="centerCrop"
         android:src="@drawable/water" />
@@ -50,7 +50,7 @@
         app:JV_fixedCenter="false" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchControls"
         android:layout_width="204dp"
         android:layout_height="51dp"
         android:layout_alignParentStart="true"
@@ -59,38 +59,41 @@
         android:layout_marginTop="3dp"
         android:backgroundTint="@color/black"
         android:switchMinWidth="@dimen/cardview_default_radius"
-        android:text="Differnt Controls"
+        android:text="Controls"
+        android:textOn="Tilt Controls"
+        android:textOff="Joystick Controls"
+        android:textStyle="bold"
         android:textColor="@color/black" />
 
     <ImageButton
         android:id="@+id/blueToothConnect"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="66dp"
+        android:layout_height="69dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="16dp"
-        android:onClick="onClick"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="0dp"
         android:background="#00000000"
-        app:tint="@color/purple_700"
+        android:contentDescription="BlueTooth"
+        android:onClick="onClick"
         app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
-        android:contentDescription="BlueTooth"/>
+        app:tint="@color/purple_700" />
 
     <TextView
         android:id="@+id/angelShower"
         android:layout_width="250dp"
         android:layout_height="30dp"
-        android:textColor="@color/black"
-        android:textSize="23dp"
-        android:textAlignment="center"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="81dp"
-        android:layout_marginTop="77dp"
-        android:layout_marginEnd="80dp"
-        android:text="Angle" />
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="73dp"
+        android:text="Angle"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="23dp" />
 
     <TextView
         android:id="@+id/throttleNum"
@@ -98,10 +101,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="110dp"
-        android:layout_marginEnd="60dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="67dp"
         android:text="Throttle Percent"
         android:textColor="@color/black"
         android:textSize="23dp" />
+
+    <ProgressBar
+        android:id="@+id/blueToothLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:minWidth="100dp"
+        android:minHeight="100dp"
+        android:max="100"
+        android:indeterminateTint="#065788"/>
 
 </RelativeLayout>
