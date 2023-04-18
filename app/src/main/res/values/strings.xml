@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">375Project</string>
+    <string name="app_name">SS Pao-Tanic</string>
     <string name="title_activity_the_main">TheMainActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
