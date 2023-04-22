@@ -20,6 +20,7 @@ import com.example.a375project.databinding.ActivityTheMainBinding
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import java.util.*
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
 
 class TheMainActivity: AppCompatActivity(), SensorEventListener {
@@ -45,6 +46,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private var angleSending: Int = 0
     private var angleSendingString: String = ""
     private var angleToSent: Int = 0
+    private var throttleSent: Int = 0
     private var throttleToSend: String = ""
     private var isConnected: Boolean = false
 
@@ -110,7 +112,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             angleShower.text = "Left/Right ${sides.toInt()}"
             sidesSending = (sides.toInt()*10) + 90
 
-            if((sideSent != sidesSending) && isConnected){      //only when the boat is connected will it try to write to the boat to turn
+            if(abs(sideSent - sidesSending) !in 0..10 && isConnected){      //only when the boat is connected will it try to write to the boat to turn
                 sidesSendingString = "<" + (sidesSending).toString() + ">"      //Lines 85-87 are the converstions to send to the Aurdino by converting the data into an bitarra
 
                 sideSent = sidesSending
@@ -122,9 +124,12 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             if(isConnected) {       //if the Boat is connected to the phone to actully control the throttle
                 joyStick.setOnMoveListener { angle, strength ->
                     var throttleToSend = "<$" + (throttle).toString() + ">"
-                    throttleShower.text = "Throttle Percent ${strength.toString()}"
-                    bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
                     throttle = strength * 2
+                    throttleShower.text = "Throttle Percent ${strength.toString()}"
+                    if(abs(throttleSent - throttle) !in 0..10) {
+                        bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
+                        throttleSent = throttle
+                    }
                 }
             }else{                  //Otherwise it shows only shows how much throttle you are giving it, helps when testing
                 joyStick.setOnMoveListener {angle, strength ->
