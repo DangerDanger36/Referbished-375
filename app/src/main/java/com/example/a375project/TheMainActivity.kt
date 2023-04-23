@@ -43,7 +43,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
     private var sidesSending: Int = 90
     private var sideSent: Int = 0
     private var sidesSendingString: String = ""
-    private var angleSending: Int = 0
+    private var angleSending: Int = 1
     private var angleSendingString: String = ""
     private var angleToSent: Int = 0
     private var throttleSent: Int = 0
@@ -146,7 +146,6 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
     //This function is what is called when the switch to change to joystick controls is on
     fun changedControls(){
-        sensorManager.unregisterListener(this)
         if(angleToSent != angleSending && isConnected){
             joyStick.setOnMoveListener { angle, strength ->
 
