@@ -161,14 +161,14 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                     throttle = 0
                     throttleShower.text = "Throttle Percent ${strength.toString()}"
                 }else {
+                    throttle = strength * 2
+                    throttleShower.text = "Throttle Percent ${strength.toString()}"
+                    //Sets the data to send to the boat
                     angleShower.text = "Left/Right ${angleSending}"
                     throttleShower.text = "Throttle Percent ${strength.toString()}"
                 }
 
                 throttleToSend = "<$" + (throttle).toString() + ">"
-                bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
-
-                throttleToSend = "<$" + (0).toString() + ">" //Called again to reset the throttle of the servo since we would overexert the servo if not
                 bSocket.outputStream.write(throttleToSend.toByteArray(Charsets.UTF_8))
 
                 bSocket.outputStream.write(angleSendingString.toByteArray(Charsets.UTF_8))
@@ -238,21 +238,22 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
                 }
             }
         }
-
+        //Below is the treads for loading bar
         var i = 0
         i = loadingBluetooth.progress
         isConnected = false
         Thread(Runnable {
 
             while(!isConnected){
-                i += 1
+                i += 1  //i = loading percent
 
-                try {
+                try { //Loading bar is in try and catch due to the internal errors that can be trown from trying to connect
+                    //if statement checks if the bluetooth is connected and if there is a device that is in paired devices that has the same address as one listed above
                     if (deviceToConnectTo != null && deviceToConnectTo.bondState == BluetoothDevice.BOND_BONDED) {
-                        bSocket = deviceToConnectTo.createRfcommSocketToServiceRecord(uuid)
+                        bSocket = deviceToConnectTo.createRfcommSocketToServiceRecord(uuid) //makes connection
                         try {
                             bSocket!!.connect()
-                            isConnected = true;
+                            isConnected = true;     //if the device succeeds in connecting then stops loading bar and say 'Connected'
                             //Send toast to run on UI thread.
                             this.runOnUiThread(Runnable {
                                 Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
@@ -260,7 +261,7 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
 
                         }catch (e :Exception){
                             //Send toast to run on UI thread.
-                            this.runOnUiThread(Runnable {
+                            this.runOnUiThread(Runnable {       //Any error when trying to connect ends it
                                 Toast.makeText(this, "Can Not Connect", Toast.LENGTH_SHORT).show()
                             })
                             break;
@@ -274,10 +275,10 @@ class TheMainActivity: AppCompatActivity(), SensorEventListener {
             }
 
             loadingBluetooth.visibility = View.INVISIBLE
-        }).start()
+        }).start() //starts the loading bar thread
     }
     override fun onDestroy() {
-        sensorManager.unregisterListener(this)
+        sensorManager.unregisterListener(this)  //gets rid of the sensor listener connected to the accelerometer
         super.onDestroy()
     }
 
